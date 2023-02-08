@@ -17,7 +17,7 @@
 </script>
 
 <h1 class="text-xl">Login First</h1>
-<form on:submit|preventDefault={login} class="flex flex-col p-5 w-1/2 md:w-full">
+<form on:submit|preventDefault={login} class="flex flex-col p-5 w-full md:w-1/2">
     <div class="space-y-4 mb-8">
         <div class="flex flex-col space-y-2">
             <label for="email">Email:</label>
