@@ -10,6 +10,8 @@
     import ExpenseStore from "./store/expenseStore";
     import dayjs from "dayjs";
     import { doc, getFirestore, updateDoc } from "firebase/firestore";
+    import AuthStore from "./store/authStore";
+    import Login from "./components/Login.svelte";
 
     const months = [
         { value: 1, name: "January" },
@@ -66,44 +68,48 @@
 </script>
 
 <RootLayout>
-    <div class="w-full flex flex-col md:flex-row items-center justify-between">
-        <Button on:click={onAddExpense}><i class="fa-solid fa-plus h-5 mr-1 " /> Add Expense</Button>
-        <div class="space-x-2 mt-3 md:mt-0">
-            <select bind:value={currentMonth} class="rounded-md py-1 px-3 text-black">
-                {#each months as m}
-                    <option value={m.value}>{m.name}</option>
-                {/each}
-            </select>
-            <input bind:value={currentYear} type="text" class="rounded-md py-1 px-3 text-black w-20" />
-            <input bind:checked={all} type="checkbox" class="rounded-sm" /><span>All</span>
+    {#if !$AuthStore}
+        <Login />
+    {:else}
+        <div class="w-full flex flex-col md:flex-row items-center justify-between">
+            <Button on:click={onAddExpense}><i class="fa-solid fa-plus h-5 mr-1 " /> Add Expense</Button>
+            <div class="space-x-2 mt-3 md:mt-0">
+                <select bind:value={currentMonth} class="rounded-md py-1 px-3 text-black">
+                    {#each months as m}
+                        <option value={m.value}>{m.name}</option>
+                    {/each}
+                </select>
+                <input bind:value={currentYear} type="text" class="rounded-md py-1 px-3 text-black w-20" />
+                <input bind:checked={all} type="checkbox" class="rounded-sm" /><span>All</span>
+            </div>
         </div>
-    </div>
 
-    {#if $ExpenseStore.length == 0}
-        <h1 class="text-3xl mt-8 text-center font-semibold">Loading...</h1>
+        {#if $ExpenseStore.length == 0}
+            <h1 class="text-2xl mt-12 text-center text-gray-400 font-semibold">No expense yet</h1>
+        {/if}
+
+        <div class="grid grid-cols-1 md:grid-cols-3 mt-8 gap-8">
+            {#each expenses as exp}
+                <Card>
+                    <ExpenseItem
+                        on:loanChanged={(e) => onLoanChanged(e, exp.id)}
+                        on:loanPayed={(e) => onLoadPayed(e, exp.id)}
+                        on:editing={() => (isEdit = true)}
+                        id={exp.id}
+                        date={exp.date}
+                        name={exp.name}
+                        total={exp.total}
+                        loan={exp.loan}
+                        payedAt={exp.payedAt}
+                    />
+                </Card>
+            {/each}
+        </div>
+
+        {#if $ModalStore == "addExpense"}
+            <AddExpense {isEdit} />
+        {:else if $ModalStore == "deleteExpense"}
+            <DeleteExpense />
+        {/if}
     {/if}
-
-    <div class="grid grid-cols-1 md:grid-cols-3 mt-8 gap-8">
-        {#each expenses as exp}
-            <Card>
-                <ExpenseItem
-                    on:loanChanged={(e) => onLoanChanged(e, exp.id)}
-                    on:loanPayed={(e) => onLoadPayed(e, exp.id)}
-                    on:editing={() => (isEdit = true)}
-                    id={exp.id}
-                    date={exp.date}
-                    name={exp.name}
-                    total={exp.total}
-                    loan={exp.loan}
-                    payedAt={exp.payedAt}
-                />
-            </Card>
-        {/each}
-    </div>
 </RootLayout>
-
-{#if $ModalStore == "addExpense"}
-    <AddExpense {isEdit} />
-{:else if $ModalStore == "deleteExpense"}
-    <DeleteExpense />
-{/if}
