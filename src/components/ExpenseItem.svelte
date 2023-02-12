@@ -4,6 +4,7 @@
     import ExpenseDetailStore from "../store/expenseDetailStore";
     import ModalStore from "../store/modalStore";
     import dayjs from "dayjs";
+    import thousandSeparator from "../utils/thousandSeparator";
 
     const dispatch = createEventDispatcher();
 
@@ -15,13 +16,6 @@
     export let payedAt = "";
 
     $: payedStatus = payedAt ? "payed" : "not-payed";
-
-    function thousandSeparator(x) {
-        x = x.toString();
-        var pattern = /(-?\d+)(\d{3})/;
-        while (pattern.test(x)) x = x.replace(pattern, "$1,$2");
-        return x;
-    }
 
     $: dispatch("loanChanged", loan);
     $: dispatch("loanPayed", payedAt);
@@ -51,7 +45,7 @@
     <div class="space-y-2">
         <p class="font-semibold text-lg">{dayjs(date).format("DD MMM YYYY")}</p>
         <p class="text-gray-300">{name}</p>
-        <p class="text-green-500 font-bold text-xl ">Rp. {thousandSeparator(total)}</p>
+        <p class="text-green-500 font-semibold text-xl ">Rp. {thousandSeparator(total)}</p>
     </div>
     <div class="flex justify-between items-center mt-6">
         <div class="flex space-x-2 items-center">

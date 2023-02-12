@@ -16,16 +16,16 @@
     }
 </script>
 
-<h1 class="text-xl">Login First</h1>
-<form on:submit|preventDefault={login} class="flex flex-col p-5 w-full md:w-1/2">
-    <div class="space-y-4 mb-8">
+<h1 class="text-xl font-semibold text-center">Login</h1>
+<form on:submit|preventDefault={login} class="flex flex-col w-full items-center">
+    <div class="space-y-4 mb-8 w-full md:w-[40%] mx-auto">
         <div class="flex flex-col space-y-2">
             <label for="email">Email:</label>
-            <input bind:value={email} type="email" id="email" class="rounded-md p-2 text-black bg-slate-100" />
+            <input bind:value={email} type="email" id="email" class="input bg-slate-100" />
         </div>
         <div class="flex flex-col space-y-2">
             <label for="password">Password:</label>
-            <input bind:value={password} type="password" id="password" class="rounded-md p-2 text-black bg-slate-100" />
+            <input bind:value={password} type="password" id="password" class="input bg-slate-100" />
         </div>
     </div>
     <Button>Login</Button>

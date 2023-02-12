@@ -15,6 +15,8 @@
                 date: $ExpenseDetailStore.date,
                 name: $ExpenseDetailStore.name,
                 total: $ExpenseDetailStore.total,
+                loan: false,
+                payedAt: null,
             });
             Swal.fire({ title: "expense added successfully", icon: "success" });
         } catch (e) {
@@ -49,15 +51,15 @@
         <div class="space-y-4">
             <div class="flex flex-col space-y-2">
                 <label for="date">Expense date: </label>
-                <input bind:value={$ExpenseDetailStore.date} type="date" class="rounded-md p-2 text-black bg-slate-100" />
+                <input bind:value={$ExpenseDetailStore.date} type="date" class="input bg-slate-100" />
             </div>
             <div class="flex flex-col space-y-2">
                 <label for="name">Name: </label>
-                <input bind:value={$ExpenseDetailStore.name} type="text" id="name" class="rounded-md p-2 text-black bg-slate-100" />
+                <input bind:value={$ExpenseDetailStore.name} type="text" id="name" class="input bg-slate-100" />
             </div>
             <div class="flex flex-col space-y-2">
                 <label for="total">Total: </label>
-                <input bind:value={$ExpenseDetailStore.total} type="number" id="total" class="rounded-md p-2 text-black bg-slate-100" />
+                <input bind:value={$ExpenseDetailStore.total} type="number" id="total" class="input bg-slate-100" />
             </div>
         </div>
         <Button classes="mt-8 bg-green-500 hover:bg-green-600">Save</Button>

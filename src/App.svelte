@@ -9,33 +9,29 @@
     import ExpenseDetailStore from "./store/expenseDetailStore";
     import ExpenseStore from "./store/expenseStore";
     import dayjs from "dayjs";
+    import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+    import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
     import { doc, getFirestore, updateDoc } from "firebase/firestore";
     import AuthStore from "./store/authStore";
     import Login from "./components/Login.svelte";
+    import LoadingStore from "./store/loadingStore";
+    import Loading from "./shared/Loading.svelte";
+    import thousandSeparator from "./utils/thousandSeparator";
 
-    const months = [
-        { value: 1, name: "January" },
-        { value: 2, name: "February" },
-        { value: 3, name: "March" },
-        { value: 4, name: "April" },
-        { value: 5, name: "May" },
-        { value: 6, name: "June" },
-        { value: 7, name: "July" },
-        { value: 8, name: "August" },
-        { value: 9, name: "September" },
-        { value: 10, name: "October" },
-        { value: 11, name: "November" },
-        { value: 12, name: "Desember" },
-    ];
+    dayjs.extend(isSameOrAfter);
+    dayjs.extend(isSameOrBefore);
 
-    let currentYear = new Date().getFullYear();
-    let currentMonth = months[new Date().getMonth()].value;
+    let startDate = dayjs().format("YYYY-MM-DD");
+    let endDate = dayjs().format("YYYY-MM-DD");
+
     let all = false;
     let isEdit = false;
 
-    $: expenses = $ExpenseStore.filter(
-        (exp) => (dayjs(exp.date).year() == currentYear && dayjs(exp.date).month() == currentMonth - 1) || all
-    );
+    $: expenses = $ExpenseStore
+        .filter((exp) => (dayjs(exp.date).isSameOrAfter(startDate) && dayjs(exp.date).isSameOrBefore(endDate)) || all)
+        .sort((a, b) => (dayjs(a.date) > dayjs(b.date) ? 1 : -1));
+
+    $: total = expenses.reduce((a, b) => a + (!b.loan || (b.loan && b.payedAt) ? b.total : 0), 0);
 
     async function onLoanChanged(e, id) {
         try {
@@ -68,19 +64,20 @@
 </script>
 
 <RootLayout>
-    {#if !$AuthStore}
+    {#if $LoadingStore}
+        <Loading />
+    {:else if !$AuthStore}
         <Login />
     {:else}
         <div class="w-full flex flex-col md:flex-row items-center justify-between">
             <Button on:click={onAddExpense}><i class="fa-solid fa-plus h-5 mr-1 " /> Add Expense</Button>
+            <p class="text-lg text-green-400 font-bold mt-3 md:mt-0">Total: Rp. {thousandSeparator(total)}</p>
             <div class="space-x-2 mt-3 md:mt-0">
-                <select bind:value={currentMonth} class="rounded-md py-1 px-3 text-black">
-                    {#each months as m}
-                        <option value={m.value}>{m.name}</option>
-                    {/each}
-                </select>
-                <input bind:value={currentYear} type="text" class="rounded-md py-1 px-3 text-black w-20" />
-                <input bind:checked={all} type="checkbox" class="rounded-sm" /><span>All</span>
+                <div class="flex space-x-3 items-center">
+                    <input bind:value={startDate} type="date" class="input" />
+                    <span>to</span>
+                    <input bind:value={endDate} type="date" class="input" />
+                </div>
             </div>
         </div>
 
