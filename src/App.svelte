@@ -65,7 +65,7 @@
             <div class="space-x-2 mt-4 md:mt-0">
                 <div class="flex space-x-3 items-center">
                     <input bind:value={startDate} type="date" class="input" />
-                    <input bind:checked={all} type="checkbox" class="w-4 h-4 rounded-md" />
+                    <input bind:checked={all} type="checkbox" class="w-5 h-5 rounded-lg" />
                     <input bind:value={endDate} type="date" class="input" />
                 </div>
             </div>

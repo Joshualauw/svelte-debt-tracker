@@ -23,6 +23,6 @@
     <div slot="header"><h1 class="text-xl font-semibold">Delete Expense</h1></div>
     <div class="mt-4">
         <div>Are you sure you want to delete <span class="font-semibold">{$ExpenseDetailStore.name}?</span></div>
-        <button on:click={deleteExpense} class="py-1.5 px-3 rounded-md bg-red-400 text-white mt-4 w-1/5 float-right">Delete</button>
+        <button on:click={deleteExpense} class="py-1.5 px-3 rounded-md bg-red-400 text-white mt-8 w-full">Delete</button>
     </div>
 </Modal>

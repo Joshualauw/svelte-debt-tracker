@@ -1,6 +1,6 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <script>
-    import { fade, fly } from "svelte/transition";
+    import { fly } from "svelte/transition";
     import ModalStore from "../store/modalStore";
 
     function closeModal() {
