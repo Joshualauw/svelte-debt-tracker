@@ -8,7 +8,25 @@
 
     export let isEdit = false;
 
+    function validateForm() {
+        let errors = [];
+
+        if (!$ExpenseDetailStore.date) errors.push("date cannot be invalid");
+        if (!$ExpenseDetailStore.name) errors.push("description cannot be empty");
+        if (!$ExpenseDetailStore.total) errors.push("total cannot be 0");
+
+        if (errors.length > 0) {
+            let errorMessage = "";
+            errors.forEach((err) => (errorMessage += `<li>${err}</li>`));
+            Swal.fire({ html: `<ul class='bg-red-500 p-2 rounded-md text-white'>${errorMessage}<div>`, icon: "error" });
+        }
+
+        return errors.length == 0;
+    }
+
     async function addExpense() {
+        if (!validateForm()) return;
+
         try {
             const expenseRef = collection(getFirestore(), "expenses");
             await addDoc(expenseRef, {
@@ -28,6 +46,8 @@
     }
 
     async function editExpense() {
+        if (!validateForm()) return;
+
         try {
             const expenseRef = doc(getFirestore(), "expenses", $ExpenseDetailStore.id);
             await updateDoc(expenseRef, {
@@ -51,15 +71,15 @@
         <div class="space-y-4">
             <div class="flex flex-col space-y-2">
                 <label for="date">Expense date: </label>
-                <input bind:value={$ExpenseDetailStore.date} type="date" class="input bg-slate-100" />
+                <input bind:value={$ExpenseDetailStore.date} type="date" class="input" />
             </div>
             <div class="flex flex-col space-y-2">
-                <label for="name">Name: </label>
-                <input bind:value={$ExpenseDetailStore.name} type="text" id="name" class="input bg-slate-100" />
+                <label for="name">Description: </label>
+                <textarea bind:value={$ExpenseDetailStore.name} id="name" class="input resize-none" rows="5" />
             </div>
             <div class="flex flex-col space-y-2">
                 <label for="total">Total: </label>
-                <input bind:value={$ExpenseDetailStore.total} type="number" id="total" class="input bg-slate-100" />
+                <input bind:value={$ExpenseDetailStore.total} type="number" id="total" class="input" />
             </div>
         </div>
         <Button classes="mt-8 bg-green-500 hover:bg-green-600">Save</Button>

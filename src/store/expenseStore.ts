@@ -8,7 +8,6 @@ const ExpenseStore: Writable<Expense[]> = writable([]);
 const expenseRef = collection(getFirestore(), "expenses");
 LoadingStore.set(true);
 onSnapshot(expenseRef, (docs) => {
-    console.log("berubah");
     let expenses: Expense[] = [];
     docs.forEach((doc) => {
         expenses.push({ id: doc.id, ...(doc.data() as any) });

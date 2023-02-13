@@ -3,8 +3,8 @@
 </script>
 
 <div class="mx-auto min-h-screen bg-deepBlue text-white">
-    <Navbar />
-    <div class="px-8 md:px-16">
+    <Navbar on:add />
+    <div class="px-6 md:px-16">
         <slot />
     </div>
 </div>

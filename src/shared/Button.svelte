@@ -2,6 +2,6 @@
     export let classes = "";
 </script>
 
-<button class="bg-darkBlue hover:bg-blue px-3 py-2 rounded-md text-white mr-2 {classes}" on:click>
+<button class="bg-blue hover:bg-lightBlue px-3 py-2 rounded-md text-white mr-2 {classes}" on:click>
     <slot />
 </button>

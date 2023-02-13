@@ -1,12 +1,10 @@
 <script>
     import RootLayout from "./layout/RootLayout.svelte";
-    import Button from "./shared/Button.svelte";
     import Card from "./shared/Card.svelte";
     import ExpenseItem from "./components/ExpenseItem.svelte";
     import AddExpense from "./components/AddExpense.svelte";
     import ModalStore from "./store/modalStore";
     import DeleteExpense from "./components/DeleteExpense.svelte";
-    import ExpenseDetailStore from "./store/expenseDetailStore";
     import ExpenseStore from "./store/expenseStore";
     import dayjs from "dayjs";
     import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -23,15 +21,16 @@
 
     let startDate = dayjs().format("YYYY-MM-DD");
     let endDate = dayjs().format("YYYY-MM-DD");
-
     let all = false;
     let isEdit = false;
+    let type = "all";
 
     $: expenses = $ExpenseStore
         .filter((exp) => (dayjs(exp.date).isSameOrAfter(startDate) && dayjs(exp.date).isSameOrBefore(endDate)) || all)
+        .filter((exp) => (type == "expense" ? !exp.loan : type == "loan" ? exp.loan : 1))
         .sort((a, b) => (dayjs(a.date) > dayjs(b.date) ? 1 : -1));
-
-    $: total = expenses.reduce((a, b) => a + (!b.loan || (b.loan && b.payedAt) ? b.total : 0), 0);
+    $: total = expenses.reduce((a, b) => a + (!b.loan ? b.total : b.loan && b.payedAt ? 0 : 0), 0);
+    $: loanTotal = expenses.reduce((a, b) => a + (!b.loan ? 0 : b.loan && b.payedAt ? 0 : b.total), 0);
 
     async function onLoanChanged(e, id) {
         try {
@@ -50,42 +49,38 @@
             console.log(e);
         }
     }
-
-    function onAddExpense() {
-        ExpenseDetailStore.set({
-            id: "",
-            date: "",
-            name: "",
-            total: 0,
-        });
-        isEdit = false;
-        ModalStore.set("addExpense");
-    }
 </script>
 
-<RootLayout>
+<RootLayout on:add={() => (isEdit = false)}>
     {#if $LoadingStore}
         <Loading />
     {:else if !$AuthStore}
         <Login />
     {:else}
         <div class="w-full flex flex-col md:flex-row items-center justify-between">
-            <Button on:click={onAddExpense}><i class="fa-solid fa-plus h-5 mr-1 " /> Add Expense</Button>
-            <p class="text-lg text-green-400 font-bold mt-3 md:mt-0">Total: Rp. {thousandSeparator(total)}</p>
-            <div class="space-x-2 mt-3 md:mt-0">
+            <div class="mt-4 md:mt-0">
+                <p class="text-lg text-green-400 font-bold">Expenses: Rp. {thousandSeparator(total)}</p>
+                <p class="text-lg text-red-400 font-bold">Loans: Rp. {thousandSeparator(loanTotal)}</p>
+            </div>
+            <div class="space-x-2 mt-4 md:mt-0">
                 <div class="flex space-x-3 items-center">
                     <input bind:value={startDate} type="date" class="input" />
-                    <span>to</span>
+                    <input bind:checked={all} type="checkbox" class="w-4 h-4 rounded-md" />
                     <input bind:value={endDate} type="date" class="input" />
                 </div>
             </div>
+            <select bind:value={type} class="input w-fit mt-4 md:mt-0">
+                <option value="all">All</option>
+                <option value="expense">Expense</option>
+                <option value="loan">Loan</option>
+            </select>
         </div>
 
         {#if $ExpenseStore.length == 0}
             <h1 class="text-2xl mt-12 text-center text-gray-400 font-semibold">No expense yet</h1>
         {/if}
 
-        <div class="grid grid-cols-1 md:grid-cols-3 mt-8 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-12 gap-8">
             {#each expenses as exp}
                 <Card>
                     <ExpenseItem

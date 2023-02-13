@@ -1,5 +1,6 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <script>
+    import { fade, fly } from "svelte/transition";
     import ModalStore from "../store/modalStore";
 
     function closeModal() {
@@ -8,7 +9,13 @@
 </script>
 
 {#if $ModalStore}
-    <div on:click|self={closeModal} class="fixed w-full h-full bg-[rgba(0,0,0,0.3)] top-0 left-0 text-gray-200 px-8">
+    <div
+        transition:fly={{ y: 50 }}
+        on:introstart
+        on:outroend
+        on:click|self={closeModal}
+        class="fixed w-full h-full bg-[rgba(0,0,0,0.3)] top-0 left-0 text-gray-200 px-8"
+    >
         <div
             class="relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-1/3 overflow-auto p-8 rounded-lg bg-deepBlue shadow-md"
         >
