@@ -12,7 +12,7 @@
         let errors = [];
 
         if (!$ExpenseDetailStore.date) errors.push("date cannot be invalid");
-        if (!$ExpenseDetailStore.name) errors.push("description cannot be empty");
+        if (!$ExpenseDetailStore.name) errors.push("name cannot be empty");
         if (!$ExpenseDetailStore.total) errors.push("total cannot be 0");
 
         if (errors.length > 0) {
@@ -67,21 +67,21 @@
 
 <Modal>
     <div slot="header"><h1 class="text-xl text-slate-100 font-semibold">{isEdit ? "Edit" : "Add"} Expense</h1></div>
-    <form on:submit|preventDefault={isEdit ? editExpense : addExpense} class="flex flex-col p-5">
-        <div class="space-y-4">
+    <form on:submit|preventDefault={isEdit ? editExpense : addExpense} class="flex flex-col mt-4">
+        <div class="space-y-4 mb-8">
             <div class="flex flex-col space-y-2">
                 <label for="date">Expense date: </label>
                 <input bind:value={$ExpenseDetailStore.date} type="date" class="input" />
             </div>
             <div class="flex flex-col space-y-2">
-                <label for="name">Description: </label>
-                <textarea bind:value={$ExpenseDetailStore.name} id="name" class="input resize-none" rows="5" />
+                <label for="name">Name: </label>
+                <input bind:value={$ExpenseDetailStore.name} id="name" type="text" class="input" />
             </div>
             <div class="flex flex-col space-y-2">
                 <label for="total">Total: </label>
                 <input bind:value={$ExpenseDetailStore.total} type="number" id="total" class="input" />
             </div>
         </div>
-        <Button classes="mt-8 bg-green-500 hover:bg-green-600">Save</Button>
+        <Button wide>Save</Button>
     </form>
 </Modal>

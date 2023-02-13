@@ -16,9 +16,9 @@
     }
 </script>
 
-<h1 class="text-xl font-semibold text-center">Login</h1>
-<form on:submit|preventDefault={login} class="flex flex-col w-full items-center">
-    <div class="space-y-4 mb-8 w-full md:w-[40%] mx-auto">
+<h1 class="text-xl mt-5 font-semibold text-center">Login</h1>
+<form on:submit|preventDefault={login} class="flex flex-col w-full md:w-2/5 mx-auto items-center">
+    <div class="space-y-4 w-full mb-8">
         <div class="flex flex-col space-y-2">
             <label for="email">Email:</label>
             <input bind:value={email} type="email" id="email" class="input bg-slate-100" />
@@ -28,5 +28,5 @@
             <input bind:value={password} type="password" id="password" class="input bg-slate-100" />
         </div>
     </div>
-    <Button>Login</Button>
+    <Button wide>Login</Button>
 </form>

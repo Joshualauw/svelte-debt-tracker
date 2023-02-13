@@ -23,7 +23,7 @@
     let endDate = dayjs().format("YYYY-MM-DD");
     let all = false;
     let isEdit = false;
-    let type = "all";
+    let type = "any";
 
     $: expenses = $ExpenseStore
         .filter((exp) => (dayjs(exp.date).isSameOrAfter(startDate) && dayjs(exp.date).isSameOrBefore(endDate)) || all)
@@ -57,30 +57,36 @@
     {:else if !$AuthStore}
         <Login />
     {:else}
-        <div class="w-full flex flex-col md:flex-row items-center justify-between">
-            <div class="mt-4 md:mt-0">
+        <div class="w-full flex flex-col md:flex-row items-center mt-5 justify-between space-y-4 md:space-y-0">
+            <div>
                 <p class="text-lg text-green-400 font-bold">Expenses: Rp. {thousandSeparator(total)}</p>
                 <p class="text-lg text-red-400 font-bold">Loans: Rp. {thousandSeparator(loanTotal)}</p>
             </div>
-            <div class="space-x-2 mt-4 md:mt-0">
-                <div class="flex space-x-3 items-center">
-                    <input bind:value={startDate} type="date" class="input" />
-                    <input bind:checked={all} type="checkbox" class="w-5 h-5 rounded-lg" />
-                    <input bind:value={endDate} type="date" class="input" />
+
+            <div class="flex space-x-4 items-center">
+                <input bind:value={startDate} type="date" class="input w-36" />
+                <span>to</span>
+                <input bind:value={endDate} type="date" class="input w-36" />
+            </div>
+
+            <div class="flex space-x-4 items-center">
+                <select bind:value={type} class="input w-fit">
+                    <option value="any">Any</option>
+                    <option value="expense">Expense</option>
+                    <option value="loan">Loan</option>
+                </select>
+                <div class="flex items-center">
+                    <input bind:checked={all} type="checkbox" class="w-5 h-5 rounded-md mr-2" />
+                    <span>All</span>
                 </div>
             </div>
-            <select bind:value={type} class="input w-fit mt-4 md:mt-0">
-                <option value="all">All</option>
-                <option value="expense">Expense</option>
-                <option value="loan">Loan</option>
-            </select>
         </div>
 
         {#if $ExpenseStore.length == 0}
             <h1 class="text-2xl mt-12 text-center text-gray-400 font-semibold">No expense yet</h1>
         {/if}
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-12 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-12 gap-8">
             {#each expenses as exp}
                 <Card>
                     <ExpenseItem
